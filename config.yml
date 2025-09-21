@@ -35,7 +35,7 @@ engines:
     uci_options:                          # Arbitrary UCI options passed to the engine.
       Threads: 8                          # Maximum Threadripper power for longer games.
       Hash: 8192                           # Massive hash for deep calculation.
-      Move Overhead: 100                  # Increase if your bot flags games too often.
+      Move Overhead: 25                  # Increase if your bot flags games too often.
     limits:    
   #    depth: 35                           # Deep search for standard games.
   #    nodes: 8000000                      # High node count for thorough analysis.
