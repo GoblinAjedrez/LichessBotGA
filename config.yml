@@ -255,7 +255,7 @@ online_moves:
 #   max_depth: 16                         # Half move max depth. (Comment this line for max depth)
 #   max_moves: 1                          # Max number of moves played from Lichess cloud eval. (Comment this line for max moves)
   chessdb:
-    enabled: false                        # Activate online moves from https://chessdb.cn/queryc_en/
+    enabled: true                        # Activate online moves from https://chessdb.cn/queryc_en/
     priority: 100                         # Priority with which this move source is used. Higher priority is used first.
     only_without_book: false              # Whether the chessdb should only be used if there is no matching book.
     min_candidates: 1                     # Minimum number of candidate moves.
@@ -288,7 +288,7 @@ resign:
 
 rematch:
   enabled: false                           # Enable rematch functionality.
-  max_consecutive: 3                      # Maximum consecutive rematches with same opponent.
+  max_consecutive: 10000                      # Maximum consecutive rematches with same opponent.
   offer_on_win: true                      # Offer rematch when we win.
   offer_on_loss: true                     # Offer rematch when we lose.
   offer_on_draw: true                     # Offer rematch on draws.
@@ -300,7 +300,7 @@ rematch:
 # max_rating_diff: 300                    # Maximum rating difference to offer rematch.
 
 challenge:                                # Incoming challenges.
-  concurrency: 3                          # Number of games to play simultaneously.
+  concurrency: 8                          # Number of games to play simultaneously.
   max_takebacks: 3                        # Maximum number of takebacks granted to a human.
   bullet_with_increment_only: false       # Whether bullet games against BOTs should only be accepted with increment.
 # min_increment: 0                        # Minimum amount of increment to accept a challenge.
