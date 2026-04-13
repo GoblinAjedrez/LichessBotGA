@@ -12,9 +12,10 @@ on:
 jobs:
   bot-runner:
     runs-on: ubuntu-latest
+    timeout-minutes: 355
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v5
 
       - name: Setup Python
@@ -22,6 +23,11 @@ jobs:
         with:
           python-version: '3.11'
           cache: 'pip'
+
+      - name: Install system packages
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y stockfish
 
       - name: Install Python dependencies
         run: |
@@ -31,41 +37,48 @@ jobs:
           python3 -m pip show tenacity
           python3 -m pip show pyyaml
 
-      - name: Install Stockfish
+      - name: Prepare engines
         run: |
-          sudo apt-get update
-          sudo apt-get install -y stockfish
           mkdir -p engines
-          cp "$(command -v stockfish)" engines/stockfish
+          STOCKFISH_BIN="$(command -v stockfish)"
+          if [ -z "$STOCKFISH_BIN" ]; then
+            echo "ERROR: stockfish no encontrado"
+            exit 1
+          fi
+          cp "$STOCKFISH_BIN" engines/stockfish
           chmod +x engines/stockfish
-          echo "Stockfish instalado:"
+          echo "Motores preparados:"
           ls -l engines/
-          engines/stockfish | head -n 1 || true
 
       - name: Inject token into config
         env:
           LICHESS_TOKEN: ${{ secrets.LICHESS_TOKEN }}
         run: |
           if [ -z "$LICHESS_TOKEN" ]; then
-            echo "ERROR: falta LICHESS_TOKEN"
+            echo "ERROR: falta el secret LICHESS_TOKEN"
             exit 1
           fi
 
           python3 << 'EOF'
+          import os
           import yaml
 
           with open("config.yml", "r", encoding="utf-8") as f:
               config = yaml.safe_load(f) or {}
 
-          config["token"] = "${{ secrets.LICHESS_TOKEN }}"
+          config["token"] = os.environ["LICHESS_TOKEN"]
 
           with open("config.yml", "w", encoding="utf-8") as f:
               yaml.safe_dump(config, f, default_flow_style=False, sort_keys=False)
 
-          print("Token metido en config.yml")
+          print("Token metido correctamente en config.yml")
           EOF
 
-      - name: Launch bot
+      - name: Sanity check
         run: |
-          python3 -c "import tenacity, yaml; print('Imports OK')"
+          python3 -c "import tenacity, yaml; print('Python OK')"
+          test -f engines/stockfish && echo "Stockfish OK"
+
+      - name: Run bot
+        run: |
           python3 user_interface.py
