@@ -62,18 +62,6 @@ syzygy:
       - "./syzygy"
     max_pieces: 7
     instant_play: true
-  antichess:
-    enabled: false
-    paths:
-      - "/path/to/antichess/syzygy"
-    max_pieces: 6
-    instant_play: true
-  atomic:
-    enabled: false
-    paths:
-      - "/path/to/atomic/syzygy"
-    max_pieces: 6
-    instant_play: true
 
 gaviota:
   enabled: false
